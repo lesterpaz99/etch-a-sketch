@@ -1,0 +1,73 @@
+.aside {
+	display: flex;
+	flex-direction: column;
+	padding: 1rem;
+	gap: 2rem;
+	width: 50px;
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	border-right: 1px solid gray;
+	transition: 0.2s ease-out;
+	background-color: white;
+
+	.burgerIcon {
+		position: absolute;
+		top: 10px;
+		left: 25px;
+		width: 32px;
+		height: 32px;
+	}
+
+	.iconMenu {
+		border-bottom: 1px solid gray;
+		height: 34px;
+	}
+
+	.icons {
+		width: 28px;
+		height: 28px;
+	}
+
+	.optionsContainer {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+}
+
+.aside:hover {
+	width: 220px;
+	transition: 0.2s 0.2s ease-in;
+}
+
+.optionsContainer button {
+	background-color: transparent;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.5rem;
+	cursor: pointer;
+}
+
+.optionsContainer button:hover {
+	background-color: rgba($color: gray, $alpha: 0.2);
+}
+
+.changeColor {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+}
+
+input[type='color'] {
+	-webkit-appearance: none;
+	border: none;
+	width: 32px;
+	height: 32px;
+}
