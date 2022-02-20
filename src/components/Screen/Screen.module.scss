@@ -10,11 +10,22 @@
 	border: 0.2px dotted rgba($color: gray, $alpha: 0.8);
 }
 
+.labelRangeWrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.iRangeContainer {
+	margin-left: 22px;
+}
+
 input[type='range'] {
 	height: 8px;
 	-webkit-appearance: none;
 	margin: 10px 0 22px 0;
-	width: 100%;
+	width: 280px;
+	direction: rtl;
 }
 input[type='range']:focus {
 	outline: none;
