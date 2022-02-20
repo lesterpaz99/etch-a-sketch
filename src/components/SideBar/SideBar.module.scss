@@ -25,6 +25,10 @@
 		height: 34px;
 	}
 
+	.iconMenu:focus {
+		background-color: rgba($color: gray, $alpha: 0.2);
+	}
+
 	.icons {
 		width: 28px;
 		height: 28px;
@@ -55,6 +59,10 @@
 }
 
 .optionsContainer button:hover {
+	background-color: rgba($color: gray, $alpha: 0.2);
+}
+
+.optionsContainer button:focus {
 	background-color: rgba($color: gray, $alpha: 0.2);
 }
 
