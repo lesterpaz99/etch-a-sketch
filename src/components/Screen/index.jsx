@@ -1,6 +1,6 @@
-import { useState, useRef, useContext } from 'react';
-import { globalColor } from '../../context/globalColor';
 import styles from './Screen.module.scss';
+import { useState, useRef, useContext, useCallback, useId } from 'react';
+import { globalColor } from '../../context/globalColor';
 
 const Screen = () => {
 	const [size, setSize] = useState(16);
@@ -13,10 +13,10 @@ const Screen = () => {
 		gridChildren.forEach((child) => (child.style.backgroundColor = '#ffffff'));
 	};
 
-	const handleInputValue = () => {
+	const handleInputValue = useCallback(() => {
 		setSize(inputRange.current.value);
 		clean();
-	};
+	});
 
 	const arr = new Array(size * size).fill('div');
 
@@ -81,7 +81,7 @@ const Screen = () => {
 						key={divItem + index}
 						name={divItem + index}
 						onMouseOver={() => handleColor(index)}
-					></div>
+					/>
 				))}
 			</div>
 		</div>
