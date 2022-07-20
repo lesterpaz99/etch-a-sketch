@@ -3,7 +3,7 @@ import { globalColor } from '../../context/globalColor';
 import styles from './Screen.module.scss';
 
 const Screen = () => {
-	const [size, setSize] = useState(64);
+	const [size, setSize] = useState(16);
 	const { color, mode, handleMode } = useContext(globalColor);
 	const inputRange = useRef(null);
 	const gridContainer = useRef(null);
@@ -63,7 +63,7 @@ const Screen = () => {
 						value={size}
 						min={16}
 						step={16}
-						max={64}
+						max={32}
 						ref={inputRange}
 						onChange={handleInputValue}
 					/>{' '}
