@@ -1,86 +1,111 @@
 import styles from './Screen.module.scss';
-import { useState, useRef, useContext, useCallback, useId } from 'react';
+import { useState, useRef, useContext, useCallback, useMemo } from 'react';
 import { globalColor } from '../../context/globalColor';
 
+// Constants for cleaner code
+const MIN_GRID_SIZE = 16;
+const MAX_GRID_SIZE = 32;
+const GRID_STEP = 16;
+const DEFAULT_COLOR = '#ffffff';
+
 const Screen = () => {
-	const [size, setSize] = useState(16);
+	const [gridSize, setGridSize] = useState(MIN_GRID_SIZE);
 	const { color, mode, handleMode } = useContext(globalColor);
-	const inputRange = useRef(null);
-	const gridContainer = useRef(null);
+	const gridContainerRef = useRef(null);
 
-	const clean = () => {
-		const gridChildren = Array.from(gridContainer.current.children);
-		gridChildren.forEach((child) => (child.style.backgroundColor = '#ffffff'));
-	};
+	const clearGrid = useCallback(() => {
+		const gridChildren = Array.from(gridContainerRef.current.children);
+		gridChildren.forEach(
+			(child) => (child.style.backgroundColor = DEFAULT_COLOR)
+		);
+	}, []);
 
-	const handleInputValue = useCallback(() => {
-		setSize(inputRange.current.value);
-		clean();
-	});
+	const handleGridSizeChange = useCallback(
+		(event) => {
+			const newSize = Number(event.target.value);
+			setGridSize(newSize);
+			clearGrid();
+		},
+		[clearGrid]
+	);
 
-	const arr = new Array(size * size).fill('div');
+	// Memoize the array for grid cells to avoid unnecessary re-renders
+	const gridCells = useMemo(
+		() => new Array(gridSize * gridSize).fill(null),
+		[gridSize]
+	);
 
-	const gridSize = {
-		display: 'grid',
-		gridTemplateColumns: `repeat(${size}, 1fr)`,
-		gridTemplateRows: `repeat(${size}, 1fr)`,
-	};
+	// Generate dynamic grid styles based on grid size
+	const gridStyle = useMemo(
+		() => ({
+			gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+			gridTemplateRows: `repeat(${gridSize}, 1fr)`,
+		}),
+		[gridSize]
+	);
 
-	const setRandomColor = () => {
-		const randomColor1 = Math.floor(Math.random() * 256);
-		const randomColor2 = Math.floor(Math.random() * 256);
-		const randomColor3 = Math.floor(Math.random() * 256);
+	// Utility to generate a random RGB color
+	const generateRandomColor = useCallback(() => {
+		const getRandomValue = () => Math.floor(Math.random() * 256);
+		return `rgb(${getRandomValue()}, ${getRandomValue()}, ${getRandomValue()})`;
+	}, []);
 
-		return `rgb(${randomColor1}, ${randomColor2}, ${randomColor3})`;
-	};
+	// Apply color based on mode
+	const applyColorToCell = useCallback(
+		(cellIndex) => {
+			const targetCell = gridContainerRef.current.children[cellIndex];
 
-	const handleColor = (index) => {
-		const target = gridContainer.current.children[index];
-		if (mode === 'color') {
-			target.style.backgroundColor = color;
-		}
-		if (mode === 'eraser') {
-			target.style.backgroundColor = '#ffffff';
-		}
-		if (mode === 'rainbow') {
-			target.style.backgroundColor = setRandomColor();
-		}
-	};
+			switch (mode) {
+				case 'color':
+					targetCell.style.backgroundColor = color;
+					break;
+				case 'eraser':
+					targetCell.style.backgroundColor = DEFAULT_COLOR;
+					break;
+				case 'rainbow':
+					targetCell.style.backgroundColor = generateRandomColor();
+					break;
+				default:
+					break;
+			}
+		},
+		[color, mode, generateRandomColor]
+	);
 
+	// Handle the cleaning mode
 	if (mode === 'clean') {
-		clean();
-		handleMode('color');
+		clearGrid();
+		handleMode('color'); // Reset mode back to 'color' after cleaning
 	}
 
 	return (
 		<div>
 			<label className={styles.labelRangeWrapper}>
-				<p>Adjust:</p>
+				<p>Adjust Grid Size:</p>
 				<div className={styles.iRangeContainer}>
-					<span>-</span>{' '}
+					<span>-</span>
 					<input
 						type='range'
-						value={size}
-						min={16}
-						step={16}
-						max={32}
-						ref={inputRange}
-						onChange={handleInputValue}
-					/>{' '}
+						value={gridSize}
+						min={MIN_GRID_SIZE}
+						max={MAX_GRID_SIZE}
+						step={GRID_STEP}
+						onChange={handleGridSizeChange}
+					/>
 					<span>+</span>
 				</div>
 			</label>
+
 			<div
-				style={gridSize}
+				style={gridStyle}
 				className={styles.screenContainer}
-				ref={gridContainer}
+				ref={gridContainerRef}
 			>
-				{arr.map((divItem, index) => (
+				{gridCells.map((_, index) => (
 					<div
 						className={styles.divPixel}
-						key={divItem + index}
-						name={divItem + index}
-						onMouseOver={() => handleColor(index)}
+						key={index}
+						onMouseOver={() => applyColorToCell(index)}
 					/>
 				))}
 			</div>
